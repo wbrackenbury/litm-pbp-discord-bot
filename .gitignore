@@ -1,7 +1,12 @@
+.env
+
 # Byte-compiled / optimized / DLL files
 __pycache__/
 *.py[codz]
 *$py.class
+
+# DB
+*.db
 
 # C extensions
 *.so
