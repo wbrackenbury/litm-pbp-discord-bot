@@ -31,11 +31,10 @@ async def on_ready():
 
 def format_tag(tag: Tag) -> str:
     """Format a tag for display on a single line (without NPC, shown in subheading)."""
-    parts = [f"**{tag.name}**"]
+    name = f"**{tag.name}**"
     if tag.level is not None:
-        parts.append(f"[Level: {tag.level}]")
-    parts.append(f"(ID: {tag.id})")
-    return " ".join(parts)
+        name += f"-{tag.level}"
+    return f"{name} (ID: {tag.id})"
 
 
 def format_tags_by_scene(tags: list[Tag], channel_name: str) -> str:
@@ -51,16 +50,15 @@ def format_tags_by_scene(tags: list[Tag], channel_name: str) -> str:
 
     sections = []
     for scene_name, npcs in by_scene.items():
-        scene_header = f"__**{scene_name}**__"
-        npc_sections = []
+        lines = [f"__**{scene_name}**__"]
         # Sort NPC names so "Story Tags" appears first
         sorted_npcs = sorted(npcs.keys(), key=lambda x: (x != "Story Tags", x))
         for npc_name in sorted_npcs:
             npc_tags = npcs[npc_name]
-            npc_header = f"\t**{npc_name}**"
-            tag_lines = [f"\t\t{format_tag(tag)}" for tag in npc_tags]
-            npc_sections.append(npc_header + "\n" + "\n".join(tag_lines))
-        sections.append(scene_header + "\n" + "\n".join(npc_sections))
+            lines.append(f"> **{npc_name}**")
+            for tag in npc_tags:
+                lines.append(f"> > {format_tag(tag)}")
+        sections.append("\n".join(lines))
 
     return "\n\n".join(sections)
 
